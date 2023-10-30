@@ -25,8 +25,8 @@ services:
       - --accessLog.bufferingSize=100 # Configuring a buffer of 100 lines
       - --accessLog.filters.statusCodes=400-499
       - --providers.docker=true
-      - --providers.docker.endpoint=unix:///var/run/docker.sock
-      - --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$DOMAIN_NAME`)
+      #- --providers.docker.endpoint=unix:///var/run/docker.sock
+      - --providers.docker.defaultrule=Host(`{{ .Name }}.$DOMAIN_NAME`)
       - --providers.docker.exposedByDefault=false
       - --providers.docker.network=proxynet
       - --providers.docker.swarmMode=false
@@ -88,7 +88,8 @@ services:
       ## Services - API
       - "traefik.http.routers.traefik-rtr.service=api@internal"
       ## Middlewares
-      - "traefik.http.routers.traefik-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.traefik-rtr.middlewares=chain-no-authh@file"
+      #- "traefik.http.routers.traefik-rtr.middlewares=chain-oauth@file"
   oauth:
     container_name: oauth
     image: thomseddon/traefik-forward-auth:latest
@@ -120,7 +121,8 @@ services:
       - "traefik.http.routers.oauth-rtr.tls=true"
       #      - "traefik.http.routers.oauth-rtr.tls.certresolver=dns-cloudflare"
       ## Middlewares
-      - "traefik.http.routers.oauth-rtr.middlewares=chain-oauth@file"
+      #- "traefik.http.routers.oauth-rtr.middlewares=chain-oauth@file"
+      - "traefik.http.routers.oauth-rtr.middlewares=chain-no-auth@file"
       ## HTTP Services
       - "traefik.http.routers.oauth-rtr.service=oauth-svc"
       - "traefik.http.services.oauth-svc.loadbalancer.server.port=4181"
@@ -151,6 +153,7 @@ services:
       #      - "traefik.http.routers.portainer-rtr.middlewares=chain-no-auth@file" # No Authentication
       #      - "traefik.http.routers.portainer-rtr.middlewares=chain-basic-auth@file" # Basic Authentication
       - "traefik.http.routers.portainer-rtr.middlewares=chain-oauth@file" # Google OAuth 2.0
+      #- "traefik.http.routers.portainer-rtr.middlewares=chain-no-auth@file" # Google OAuth 2.0
       ## HTTP Services
       - "traefik.http.routers.portainer-rtr.service=portainer-svc"
       - "traefik.http.services.portainer-svc.loadbalancer.server.port=9000"
