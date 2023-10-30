@@ -28,7 +28,7 @@ services:
       - --providers.docker.endpoint=unix:///var/run/docker.sock
       - --providers.docker.defaultrule=Host(`{{ index .Labels "com.docker.compose.service" }}.$DOMAIN_NAME`)
       - --providers.docker.exposedByDefault=false
-      - --providers.docker.network=t2_proxy
+      - --providers.docker.network=proxynet
       - --providers.docker.swarmMode=false
       - --providers.file.directory=/rules # Load dynamic configuration from one or more .toml or .yml files in a directory.
       #      - --providers.file.filename=/path/to/file # Load dynamic configuration from a file.
@@ -65,6 +65,8 @@ services:
       - $USER_DIR/mediastation/traefik/traefik.log:/traefik.log # for fail2ban - make sure to touch file before starting container
       - $USER_DIR/mediastation/shared:/shared
     environment:
+      - USER_ID=$PUID
+      - GROUP_ID=$PGID
       - CF_API_EMAIL=$CLOUDFLARE_EMAIL
       - CF_API_KEY=$CLOUDFLARE_API_KEY
     labels:
@@ -78,7 +80,7 @@ services:
       - "traefik.http.routers.traefik-rtr.entrypoints=https"
       - "traefik.http.routers.traefik-rtr.rule=Host(`traefik.$DOMAIN_NAME`)"
       - "traefik.http.routers.traefik-rtr.tls=true"
-      #      - "traefik.http.routers.traefik-rtr.tls.certresolver=dns-cloudflare"
+      - "traefik.http.routers.traefik-rtr.tls.certresolver=cloudflare"
       - "traefik.http.routers.traefik-rtr.tls.domains[0].main=$DOMAIN_NAME"
       - "traefik.http.routers.traefik-rtr.tls.domains[0].sans=*.$DOMAIN_NAME"
       #      - "traefik.http.routers.traefik-rtr.tls.domains[1].main=$DOMAIN" # Pulls main cert for second domain
@@ -97,6 +99,8 @@ services:
     security_opt:
       - no-new-privileges:true
     environment:
+      - USER_ID=$PUID
+      - GROUP_ID=$PGID
       - CLIENT_ID=$GOOGLE_CLIENT_ID
       - CLIENT_SECRET=$GOOGLE_CLIENT_SECRET
       - SECRET=$OAUTH_SECRET
@@ -133,6 +137,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - $USER_DIR/mediastation/portainer/data:/data # Change to local directory if you want to save/transfer config locally
     environment:
+      - USER_ID=$PUID
+      - GROUP_ID=$PGID
       - TZ=$TZ
     labels:
       - "traefik.enable=true"
