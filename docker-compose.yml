@@ -160,6 +160,5 @@ services:
       DOMAIN: $DOMAIN_NAME
 
 networks:
-  default:
-    name: proxynet
+  proxynet:
     external: true
