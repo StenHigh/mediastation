@@ -1,8 +1,5 @@
 version: '3'
-networks:
-  default:
-    name: proxynet
-    external: true
+
 services:
   # Traefik 2 - Reverse Proxy
   # Touch (create empty files) traefik.log and acme/acme.json. Set acme.json permissions to 600.
@@ -161,3 +158,8 @@ services:
     #    - /var/run/docker.sock:/var/run/docker.sock:ro # only needed if restarting containers
     environment:
       DOMAIN: $DOMAIN_NAME
+
+networks:
+  default:
+    name: proxynet
+    external: true
