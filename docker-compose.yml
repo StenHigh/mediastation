@@ -162,8 +162,8 @@ services:
     image: humenius/traefik-certs-dumper:latest
     #    command: --restart-containers container1,container2,container3
     volumes:
-      - $USER_DIR/docker/traefik/acme:/traefik:ro
-      - $USER_DIR/docker/shared/certs:/output:rw
+      - $USER_DIR/mediastation/traefik/acme:/traefik:ro
+      - $USER_DIR/mediastation/shared/certs:/output:rw
     #    - /var/run/docker.sock:/var/run/docker.sock:ro # only needed if restarting containers
     environment:
       DOMAIN: $DOMAIN_NAME
