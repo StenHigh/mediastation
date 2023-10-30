@@ -93,7 +93,7 @@ services:
     #    image: thomseddon/traefik-forward-auth:2.1-arm # Use this image with Raspberry Pi
     restart: unless-stopped
     networks:
-      - t2_proxy
+      - proxynet
     security_opt:
       - no-new-privileges:true
     environment:
@@ -126,7 +126,7 @@ services:
     restart: unless-stopped
     command: -H unix:///var/run/docker.sock
     networks:
-      - t2_proxy
+      - proxynet
     security_opt:
       - no-new-privileges:true
     volumes:
